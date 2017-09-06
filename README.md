@@ -37,3 +37,7 @@ All configuration is managed using environment variables:
 | CS_GROUPS           | A json string of a chosen group name, linking to a host, pipeline and groups in concourse | '[{"group":"test","hosts":[{"fqdn":"buildpacks.ci.cf-app.com","pipelines":[{"groups":["automated-builds","manual-builds"],"name":"binary-builder"},{"name":"brats"}]},{"fqdn":"capi.ci.cf-app.com"},{"fqdn":"diego.ci.cf-app.com","pipelines":[{"name":"greenhouse"}]}]}]' |
 | SKIP_SSL_VALIDATION | If set to "true" then SSL Validation will be ignored for all hosts                        | "true"                                                                                                                                                                                                                                                                     |
 | REFRESH_INTERVAL    | An integer in seconds for configuring the page refresh interval, defaults to 30           | 10                                                                                                                                                                                                                                                                         |
+
+### Dependency management
+
+This project uses [dep](https://github.com/golang/dep) to manage its dependencies.
