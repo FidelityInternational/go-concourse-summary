@@ -1,0 +1,19 @@
+{{define "header"}}
+<!DOCTYPE html>
+<html>
+  <head rel="v2">
+    <title>Concourse Summary</title>
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <script>window.refresh_interval = {{ .RefreshInterval}}</script>
+    <script src="/favico-0.3.10.min.js"></script>
+    <script src="/refresh.js"></script>
+  </head>
+  <body>
+    <div class="time">
+      {{ .Now}} (<span id="countdown">{{ .RefreshInterval}}</span>)
+      <div class="right">
+        <a class="github" href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">&nbsp;</a>
+      </div>
+    </div>
+{{end}}
