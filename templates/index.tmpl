@@ -11,13 +11,11 @@
   <body>
     <h1>Concourse Summary</h1>
     <p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
-
     {{range .Hosts}}
     <div><a href="/host/{{ .FQDN}}">
       {{ .FQDN}}
     </a></div>
     {{end}}
-
     {{if .Groups}}
       <div style="margin-top:2em">Groups</div>
       {{range .Groups}}
@@ -26,7 +24,6 @@
         </a></div>
       {{end}}
     {{end}}
-
     <p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
   </body>
 </html>

@@ -129,6 +129,7 @@ func SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString
 	}, nil
 }
 
+// Index renders and serves the index page
 func (config *Config) Index(w http.ResponseWriter, r *http.Request) {
 	err := config.Templates.ExecuteTemplate(w, "index", indexStruct{Hosts: config.Hosts, Groups: config.CSGroups})
 	if err != nil {
@@ -136,6 +137,7 @@ func (config *Config) Index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// HostIndex renders and serves the host page
 func (config *Config) HostIndex(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	host := vars["host"]
@@ -157,6 +159,7 @@ func (config *Config) HostIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// GroupIndex renders and serves the group page
 func (config *Config) GroupIndex(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	group := vars["group"]
