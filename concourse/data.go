@@ -10,6 +10,7 @@ import (
 	"github.com/concourse/go-concourse/concourse"
 )
 
+// Data concourse data structure
 type Data struct {
 	Pipeline       string
 	Group          string
@@ -20,6 +21,7 @@ type Data struct {
 	Statuses       map[string]int
 }
 
+// GroupData a grouping structure for Data
 type GroupData struct {
 	Host     string
 	Statuses []Data
@@ -52,8 +54,9 @@ func filterData(data []Data, pipelines []Pipeline) []Data {
 }
 
 func getData(host string, config *Config) ([]Data, error) {
+	uri := fmt.Sprintf("%s://%s", config.Protocol, host)
 	httpClient := createHTTPClient(config)
-	client := concourse.NewClient(host, httpClient, false)
+	client := concourse.NewClient(uri, httpClient, false)
 	pipelines, err := client.ListPipelines()
 	if err != nil {
 		return []Data{}, err
@@ -79,9 +82,9 @@ func getData(host string, config *Config) ([]Data, error) {
 					datum.Group = group
 					datum.Paused = pipeline.Paused
 					if group == "" {
-						datum.URL = fmt.Sprintf("%s%s", host, pipeline.URL)
+						datum.URL = fmt.Sprintf("%s%s", uri, pipeline.URL)
 					} else {
-						datum.URL = fmt.Sprintf("%s%s?groups=%s", host, pipeline.URL, group)
+						datum.URL = fmt.Sprintf("%s%s?groups=%s", uri, pipeline.URL, group)
 					}
 				}
 				if !datum.Running {
@@ -106,6 +109,7 @@ func getData(host string, config *Config) ([]Data, error) {
 	return values, nil
 }
 
+// Percent calculate the a percentage value for a particular status from data statuses
 func (d Data) Percent(status string) int {
 	if len(d.Statuses) == 0 {
 		return 0

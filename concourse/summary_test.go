@@ -43,6 +43,7 @@ var _ = Describe("#SetupConfig", func() {
 		It("returns populated config with the default refresh interval", func() {
 			Ω(err).Should(BeNil())
 			Ω(config.RefreshInterval).Should(Equal(30))
+			Ω(config.Protocol).Should(Equal("https"))
 		})
 	})
 
@@ -67,6 +68,7 @@ var _ = Describe("#SetupConfig", func() {
 				It("returns populated config with the default refresh interval", func() {
 					Ω(err).Should(BeNil())
 					Ω(config.RefreshInterval).Should(Equal(30))
+					Ω(config.Protocol).Should(Equal("https"))
 				})
 			})
 
@@ -78,6 +80,7 @@ var _ = Describe("#SetupConfig", func() {
 				It("returns populated config with the provided refresh interval", func() {
 					Ω(err).Should(BeNil())
 					Ω(config.RefreshInterval).Should(Equal(1))
+					Ω(config.Protocol).Should(Equal("https"))
 				})
 			})
 		})
@@ -87,6 +90,7 @@ var _ = Describe("#SetupConfig", func() {
 		It("returns populated config with the empty CSGroups", func() {
 			Ω(err).Should(BeNil())
 			Ω(config.CSGroups).Should(Equal(summary.CSGroups{}))
+			Ω(config.Protocol).Should(Equal("https"))
 		})
 	})
 
@@ -115,6 +119,7 @@ var _ = Describe("#SetupConfig", func() {
 						Hosts: []summary.Host{},
 					},
 				}))
+				Ω(config.Protocol).Should(Equal("https"))
 			})
 		})
 	})
@@ -123,6 +128,7 @@ var _ = Describe("#SetupConfig", func() {
 		It("returns populated config with the empty Hosts", func() {
 			Ω(err).Should(BeNil())
 			Ω(config.CSGroups).Should(Equal(summary.CSGroups{}))
+			Ω(config.Protocol).Should(Equal("https"))
 		})
 	})
 
@@ -153,6 +159,7 @@ var _ = Describe("#SetupConfig", func() {
 						FQDN: "host2",
 					},
 				}))
+				Ω(config.Protocol).Should(Equal("https"))
 			})
 		})
 	})
@@ -173,6 +180,7 @@ var _ = Describe("#SetupConfig", func() {
 			It("returns populated config with the skipSSLValidation as false", func() {
 				Ω(err).Should(BeNil())
 				Ω(config.SkipSSLValidation).Should(BeFalse())
+				Ω(config.Protocol).Should(Equal("https"))
 			})
 		})
 
@@ -184,6 +192,7 @@ var _ = Describe("#SetupConfig", func() {
 			It("returns populated config with the skipSSLValidation as true", func() {
 				Ω(err).Should(BeNil())
 				Ω(config.SkipSSLValidation).Should(BeTrue())
+				Ω(config.Protocol).Should(Equal("https"))
 			})
 		})
 	})

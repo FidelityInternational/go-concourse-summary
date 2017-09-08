@@ -2,7 +2,6 @@ package summary
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -25,6 +24,7 @@ type Config struct {
 	Hosts             []Host
 	SkipSSLValidation bool
 	Templates         *template.Template
+	Protocol          string
 }
 
 // CSGroups is a collection of concourse summary groups
@@ -126,6 +126,7 @@ func SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString
 		CSGroups:          groups,
 		Hosts:             hosts,
 		SkipSSLValidation: skipSSLValidation,
+		Protocol:          "https",
 	}, nil
 }
 
@@ -137,11 +138,11 @@ func (config *Config) Index(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// HostIndex renders and serves the host page
-func (config *Config) HostIndex(w http.ResponseWriter, r *http.Request) {
+// HostSummary renders and serves the host page
+func (config *Config) HostSummary(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	host := vars["host"]
-	values, err := getData(fmt.Sprintf("https://%s", host), config)
+	values, err := getData(host, config)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -159,15 +160,15 @@ func (config *Config) HostIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// GroupIndex renders and serves the group page
-func (config *Config) GroupIndex(w http.ResponseWriter, r *http.Request) {
+// GroupSummary renders and serves the group
+func (config *Config) GroupSummary(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	group := vars["group"]
 	csGroup := config.CSGroups.group(group)
 
 	var groupsData []GroupData
 	for _, host := range csGroup.Hosts {
-		values, err := getData(fmt.Sprintf("https://%s", host.FQDN), config)
+		values, err := getData(host.FQDN, config)
 		if err != nil {
 			panic(err.Error())
 		}

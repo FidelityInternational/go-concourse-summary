@@ -31,8 +31,8 @@ func main() {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/", config.Index)
-	router.HandleFunc("/host/{host}", config.HostIndex)
-	router.HandleFunc("/group/{group}", config.GroupIndex)
+	router.HandleFunc("/host/{host}", config.HostSummary)
+	router.HandleFunc("/group/{group}", config.GroupSummary)
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./assets/")))
 	fmt.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
