@@ -1,16 +1,30 @@
 package summary_test
 
 import (
+	"fmt"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"unicode"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+	"github.com/gorilla/mux"
+
 	"github.com/FidelityInternational/go-concourse-summary/concourse"
 )
+
+func Router(config *summary.Config) *mux.Router {
+	server := &summary.Server{Config: config}
+	r := server.Start()
+	return r
+}
+
+func init() {
+	http.Handle("/", Router(&summary.Config{}))
+}
 
 func stringMinifier(in string) (out string) {
 	for _, c := range in {
@@ -19,6 +33,16 @@ func stringMinifier(in string) (out string) {
 		}
 	}
 	return
+}
+
+func stripDate(in string) (out string) {
+	re := regexp.MustCompile(`\d{4}-\d{2}-\d{4}:\d{2}:\d{2}&#43;\d{4}`)
+	return re.ReplaceAllString(in, "yyyy-mm-ddhh:mm:ss&#43;zzzz")
+}
+
+func stripHostPort(in string) (out string) {
+	re := regexp.MustCompile(`127\.0\.0\.1:\d{1,6}`)
+	return re.ReplaceAllString(in, "127.0.0.1:pppp")
 }
 
 var _ = Describe("#SetupConfig", func() {
@@ -224,20 +248,20 @@ var _ = Describe("config#Index", func() {
 			Ω(stringMinifier(mockRecorder.Body.String())).Should(Equal(stringMinifier(`
 <!DOCTYPE html>
 <html>
-  <head rel="v2">
-    <title>Concourse Summary</title>
-    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-    <link rel="stylesheet" type="text/css" href="/styles.css">
-    <script src="/favico-0.3.10.min.js"></script>
-    <script src="/refresh.js"></script>
-  </head>
-  <body>
-    <h1>Concourse Summary</h1>
-    <p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
+	<head rel="v2">
+		<title>Concourse Summary</title>
+		<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+		<link rel="stylesheet" type="text/css" href="/styles.css">
+		<script src="/favico-0.3.10.min.js"></script>
+		<script src="/refresh.js"></script>
+	</head>
+	<body>
+		<h1>Concourse Summary</h1>
+		<p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
 
 
-    <p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
-  </body>
+		<p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
+	</body>
 </html>`)))
 		})
 	})
@@ -259,28 +283,28 @@ var _ = Describe("config#Index", func() {
 			Ω(stringMinifier(mockRecorder.Body.String())).Should(Equal(stringMinifier(`
 <!DOCTYPE html>
 <html>
-  <head rel="v2">
-    <title>Concourse Summary</title>
-    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-    <link rel="stylesheet" type="text/css" href="/styles.css">
-    <script src="/favico-0.3.10.min.js"></script>
-    <script src="/refresh.js"></script>
-  </head>
-  <body>
-    <h1>Concourse Summary</h1>
-    <p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
+	<head rel="v2">
+		<title>Concourse Summary</title>
+		<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+		<link rel="stylesheet" type="text/css" href="/styles.css">
+		<script src="/favico-0.3.10.min.js"></script>
+		<script src="/refresh.js"></script>
+	</head>
+	<body>
+		<h1>Concourse Summary</h1>
+		<p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
 
-    <div><a href="/host/test1">
-      test1
-    </a></div>
+		<div><a href="/host/test1">
+			test1
+		</a></div>
 
-    <div><a href="/host/test2">
-      test2
-    </a></div>
+		<div><a href="/host/test2">
+			test2
+		</a></div>
 
 
-    <p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
-  </body>
+		<p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
+	</body>
 </html>`)))
 		})
 	})
@@ -302,31 +326,31 @@ var _ = Describe("config#Index", func() {
 			Ω(stringMinifier(mockRecorder.Body.String())).Should(Equal(stringMinifier(`
 <!DOCTYPE html>
 <html>
-  <head rel="v2">
-    <title>Concourse Summary</title>
-    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-    <link rel="stylesheet" type="text/css" href="/styles.css">
-    <script src="/favico-0.3.10.min.js"></script>
-    <script src="/refresh.js"></script>
-  </head>
-  <body>
-    <h1>Concourse Summary</h1>
-    <p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
+	<head rel="v2">
+		<title>Concourse Summary</title>
+		<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+		<link rel="stylesheet" type="text/css" href="/styles.css">
+		<script src="/favico-0.3.10.min.js"></script>
+		<script src="/refresh.js"></script>
+	</head>
+	<body>
+		<h1>Concourse Summary</h1>
+		<p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
 
 
-      <div style="margin-top:2em">Groups</div>
+			<div style="margin-top:2em">Groups</div>
 
-        <div><a href="/group/testGroup1">
-          testGroup1
-        </a></div>
+				<div><a href="/group/testGroup1">
+					testGroup1
+				</a></div>
 
-        <div><a href="/group/testGroup2">
-          testGroup2
-        </a></div>
+				<div><a href="/group/testGroup2">
+					testGroup2
+				</a></div>
 
 
-    <p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
-  </body>
+		<p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
+	</body>
 </html>`)))
 		})
 	})
@@ -358,40 +382,257 @@ var _ = Describe("config#Index", func() {
 			Ω(stringMinifier(mockRecorder.Body.String())).Should(Equal(stringMinifier(`
 <!DOCTYPE html>
 <html>
-  <head rel="v2">
-    <title>Concourse Summary</title>
-    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
-    <link rel="stylesheet" type="text/css" href="/styles.css">
-    <script src="/favico-0.3.10.min.js"></script>
-    <script src="/refresh.js"></script>
-  </head>
-  <body>
-    <h1>Concourse Summary</h1>
-    <p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
+	<head rel="v2">
+		<title>Concourse Summary</title>
+		<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+		<link rel="stylesheet" type="text/css" href="/styles.css">
+		<script src="/favico-0.3.10.min.js"></script>
+		<script src="/refresh.js"></script>
+	</head>
+	<body>
+		<h1>Concourse Summary</h1>
+		<p>Use the URL path to show a summary, eg, '/host/[HOST NAME]'</p>
 
-    <div><a href="/host/test1">
-      test1
-    </a></div>
+		<div><a href="/host/test1">
+			test1
+		</a></div>
 
-    <div><a href="/host/test2">
-      test2
-    </a></div>
-
-
-      <div style="margin-top:2em">Groups</div>
-
-        <div><a href="/group/testGroup1">
-          testGroup1
-        </a></div>
-
-        <div><a href="/group/testGroup2">
-          testGroup2
-        </a></div>
+		<div><a href="/host/test2">
+			test2
+		</a></div>
 
 
-    <p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
-  </body>
+			<div style="margin-top:2em">Groups</div>
+
+				<div><a href="/group/testGroup1">
+					testGroup1
+				</a></div>
+
+				<div><a href="/group/testGroup2">
+					testGroup2
+				</a></div>
+
+
+		<p>This project can be found on <a href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">Github</a></p>
+	</body>
 </html>`)))
+		})
+	})
+})
+
+var _ = Describe("#HostSummary", func() {
+	var (
+		templates    = template.Must(template.ParseGlob("../templates/*"))
+		mockRecorder *httptest.ResponseRecorder
+		config       = &summary.Config{
+			Templates: templates,
+			Protocol:  "http",
+		}
+	)
+
+	AfterEach(func() {
+		if server != nil {
+			teardown()
+		}
+
+		config = &summary.Config{
+			Templates: templates,
+			Protocol:  "http",
+		}
+	})
+
+	JustBeforeEach(func() {
+		mockRecorder = httptest.NewRecorder()
+
+		req, _ := http.NewRequest("GET", fmt.Sprintf("http://example.com/host/%s", Host(server)), nil)
+		Router(config).ServeHTTP(mockRecorder, req)
+	})
+
+	Context("when concourse returns invalid json", func() {
+		BeforeEach(func() {
+			mocks := []MockRoute{
+				{"GET", "/api/v1/pipelines", "[}", 200, "", nil},
+			}
+			setupMultiple(mocks)
+		})
+
+		It("returns an error", func() {
+			Ω(mockRecorder.Code).Should(Equal(500))
+			Ω(mockRecorder.Body.String()).Should(MatchRegexp(`Error collecting data from concourse \(127.0.0.1:\d{1,6}\) please refer to logs for more details`))
+		})
+	})
+
+	Context("when concourse has no pipelines", func() {
+		BeforeEach(func() {
+			mocks := []MockRoute{
+				{"GET", "/api/v1/pipelines", "[]", 200, "", nil},
+			}
+			setupMultiple(mocks)
+		})
+
+		It("returns a formatted blank page", func() {
+			Ω(mockRecorder.Code).Should(Equal(200))
+			Ω(stripDate(stringMinifier(mockRecorder.Body.String()))).Should(Equal(stripDate(stringMinifier(`
+<!DOCTYPE html>
+<html>
+	<head rel="v2">
+		<title>Concourse Summary</title>
+		<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+		<link rel="stylesheet" type="text/css" href="/styles.css">
+		<script>window.refresh_interval =  0 </script>
+		<script src="/favico-0.3.10.min.js"></script>
+		<script src="/refresh.js"></script>
+	</head>
+	<body>
+		<div class="time">
+			2017-09-08 15:17:56 &#43;0100 (<span id="countdown">0</span>)
+			<div class="right">
+				<a class="github" href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">&nbsp;</a>
+			</div>
+		</div>
+
+<div class="scalable">
+
+
+
+</div>
+
+	</body>
+</html>
+				`))))
+		})
+	})
+
+	Context("and concourse has pipelines", func() {
+		BeforeEach(func() {
+			mocks := []MockRoute{
+				{"GET", "/api/v1/pipelines", `[
+					{
+						"id": 1,
+						"name": "test1",
+						"url": "/test1.url",
+						"paused": false,
+						"public": true,
+						"team_name": "main"
+					}
+				]`, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", `[
+					{
+						"id": 1,
+						"name": "testJob1",
+						"url": "/test1.job.url",
+						"paused": false,
+						"team_name": "main",
+						"finished_build": {
+							"id": 1,
+							"status": "started"
+						}
+					},
+					{
+						"id": 2,
+						"name": "testJob2",
+						"url": "/test2.job.url",
+						"paused": false,
+						"team_name": "main",
+						"finished_build": {
+							"id": 1,
+							"status": "succeeded"
+						}
+					},
+					{
+						"id": 3,
+						"name": "testJob3",
+						"url": "/test3.job.url",
+						"paused": false,
+						"team_name": "main",
+						"finished_build": {
+							"id": 1,
+							"status": "failed"
+						}
+					},
+					{
+						"id": 4,
+						"name": "testJob4",
+						"url": "/test4.job.url",
+						"paused": false,
+						"team_name": "main",
+						"finished_build": {
+							"id": 1,
+							"status": "errored"
+						}
+					},
+					{
+						"id": 5,
+						"name": "testJob5",
+						"url": "/test5.job.url",
+						"paused": false,
+						"team_name": "main",
+						"finished_build": {
+							"id": 1,
+							"status": "aborted"
+						}
+					},
+					{
+						"id": 6,
+						"name": "testJob6",
+						"url": "/test6.job.url",
+						"paused": false,
+						"team_name": "main",
+						"finished_build": {
+							"id": 1,
+							"status": "pending"
+						}
+					}
+				]`, 200, "", nil},
+			}
+			setupMultiple(mocks)
+		})
+
+		It("returns a page with status etc", func() {
+			Ω(mockRecorder.Code).Should(Equal(200))
+			Ω(stripHostPort(stripDate(stringMinifier(mockRecorder.Body.String())))).Should(Equal(stripHostPort(stripDate(stringMinifier(`
+<!DOCTYPE html>
+<html>
+	<head rel="v2">
+		<title>Concourse Summary</title>
+		<link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+		<link rel="stylesheet" type="text/css" href="/styles.css">
+		<script>window.refresh_interval =  0 </script>
+		<script src="/favico-0.3.10.min.js"></script>
+		<script src="/refresh.js"></script>
+	</head>
+	<body>
+		<div class="time">
+			2017-09-08 17:05:56 &#43;0100 (<span id="countdown">0</span>)
+			<div class="right">
+				<a class="github" href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">&nbsp;</a>
+			</div>
+		</div>
+
+<div class="scalable">
+
+
+	<a href="http://127.0.0.1:49898/test1.url" target="_blank" class="outer">
+	<div class="status">
+		<div class="paused_job" style="width: 0%;"></div>
+		<div class="aborted" style="width: 16%;"></div>
+		<div class="errored" style="width: 16%;"></div>
+		<div class="failed" style="width: 16%;"></div>
+		<div class="succeeded" style="width: 16%;"></div>
+	</div>
+
+
+	<div class="inner">
+		<span class="test1"><span>test1</span></span>
+		<span class=""><span></span></span>
+	</div>
+	</a>
+
+
+</div>
+
+	</body>
+</html>`)))))
 		})
 	})
 })

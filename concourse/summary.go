@@ -2,6 +2,7 @@ package summary
 
 import (
 	"encoding/json"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -144,7 +145,10 @@ func (config *Config) HostSummary(w http.ResponseWriter, r *http.Request) {
 	host := vars["host"]
 	values, err := getData(host, config)
 	if err != nil {
-		panic(err.Error())
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, "Error collecting data from concourse (%s) please refer to logs for more details", host)
+		fmt.Println(err.Error())
+		return
 	}
 
 	err = config.Templates.ExecuteTemplate(w, "host", hostStruct{

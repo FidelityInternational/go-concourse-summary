@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
-
 	"github.com/FidelityInternational/go-concourse-summary/concourse"
 )
 
@@ -29,11 +27,9 @@ func main() {
 	}
 	config.Templates = templates
 
-	router := mux.NewRouter()
-	router.HandleFunc("/", config.Index)
-	router.HandleFunc("/host/{host}", config.HostSummary)
-	router.HandleFunc("/group/{group}", config.GroupSummary)
-	router.PathPrefix("/").Handler(http.FileServer(http.Dir("./assets/")))
+	server := summary.CreateServer(config)
+	router := server.Start()
+
 	fmt.Println("listening on :8080")
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
