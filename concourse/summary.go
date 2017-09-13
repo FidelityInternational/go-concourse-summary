@@ -174,7 +174,10 @@ func (config *Config) GroupSummary(w http.ResponseWriter, r *http.Request) {
 	for _, host := range csGroup.Hosts {
 		values, err := getData(host.FQDN, config)
 		if err != nil {
-			panic(err.Error())
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Error collecting data from concourse (%s) please refer to logs for more details", host.FQDN)
+			fmt.Println(err.Error())
+			return
 		}
 		groupsData = append(groupsData, GroupData{Host: host.FQDN, Statuses: filterData(values, host.Pipelines)})
 	}

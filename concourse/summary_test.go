@@ -506,84 +506,8 @@ var _ = Describe("#HostSummary", func() {
 	Context("and concourse has pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", `[
-					{
-						"id": 1,
-						"name": "test1",
-						"url": "/test1.url",
-						"paused": false,
-						"public": true,
-						"team_name": "main"
-					}
-				]`, 200, "", nil},
-				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", `[
-					{
-						"id": 1,
-						"name": "testJob1",
-						"url": "/test1.job.url",
-						"paused": false,
-						"team_name": "main",
-						"finished_build": {
-							"id": 1,
-							"status": "started"
-						}
-					},
-					{
-						"id": 2,
-						"name": "testJob2",
-						"url": "/test2.job.url",
-						"paused": false,
-						"team_name": "main",
-						"finished_build": {
-							"id": 1,
-							"status": "succeeded"
-						}
-					},
-					{
-						"id": 3,
-						"name": "testJob3",
-						"url": "/test3.job.url",
-						"paused": false,
-						"team_name": "main",
-						"finished_build": {
-							"id": 1,
-							"status": "failed"
-						}
-					},
-					{
-						"id": 4,
-						"name": "testJob4",
-						"url": "/test4.job.url",
-						"paused": false,
-						"team_name": "main",
-						"finished_build": {
-							"id": 1,
-							"status": "errored"
-						}
-					},
-					{
-						"id": 5,
-						"name": "testJob5",
-						"url": "/test5.job.url",
-						"paused": false,
-						"team_name": "main",
-						"finished_build": {
-							"id": 1,
-							"status": "aborted"
-						}
-					},
-					{
-						"id": 6,
-						"name": "testJob6",
-						"url": "/test6.job.url",
-						"paused": false,
-						"team_name": "main",
-						"finished_build": {
-							"id": 1,
-							"status": "pending"
-						}
-					}
-				]`, 200, "", nil},
+				{"GET", "/api/v1/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -632,6 +556,168 @@ var _ = Describe("#HostSummary", func() {
 </div>
 
 	</body>
+</html>`)))))
+		})
+	})
+})
+
+var _ = Describe("#GroupSummary", func() {
+	var (
+		templates    = template.Must(template.ParseGlob("../templates/*"))
+		mockRecorder *httptest.ResponseRecorder
+		config       = &summary.Config{
+			Templates: templates,
+			Protocol:  "http",
+		}
+	)
+
+	AfterEach(func() {
+		if server != nil {
+			teardown()
+		}
+
+		config = &summary.Config{
+			Templates: templates,
+			Protocol:  "http",
+		}
+	})
+
+	JustBeforeEach(func() {
+		mockRecorder = httptest.NewRecorder()
+
+		config.CSGroups = []summary.CSGroup{
+			{
+				Group: "test",
+				Hosts: []summary.Host{
+					{
+						FQDN: Host(server),
+					},
+				},
+			},
+		}
+
+		req, _ := http.NewRequest("GET", "http://example.com/group/test", nil)
+		Router(config).ServeHTTP(mockRecorder, req)
+	})
+
+	Context("when concourse returns invalid json", func() {
+		BeforeEach(func() {
+			mocks := []MockRoute{
+				{"GET", "/api/v1/pipelines", "[}", 200, "", nil},
+			}
+			setupMultiple(mocks)
+		})
+
+		It("returns an error", func() {
+			Ω(mockRecorder.Code).Should(Equal(500))
+			Ω(mockRecorder.Body.String()).Should(MatchRegexp(`Error collecting data from concourse \(127.0.0.1:\d{1,6}\) please refer to logs for more details`))
+		})
+	})
+
+	Context("when concourse has no pipelines", func() {
+		BeforeEach(func() {
+			mocks := []MockRoute{
+				{"GET", "/api/v1/pipelines", "[]", 200, "", nil},
+			}
+			setupMultiple(mocks)
+		})
+
+		It("returns a formatted blank page", func() {
+			Ω(mockRecorder.Code).Should(Equal(200))
+			Ω(stripDate(stripHostPort(stringMinifier(mockRecorder.Body.String())))).Should(Equal(stripHostPort(stripDate(stringMinifier(`
+<!DOCTYPE html>
+<html>
+  <head rel="v2">
+    <title>Concourse Summary</title>
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <script>window.refresh_interval =  0 </script>
+    <script src="/favico-0.3.10.min.js"></script>
+    <script src="/refresh.js"></script>
+  </head>
+  <body>
+    <div class="time">
+      2017-09-13 09:38:03 &#43;0100 (<span id="countdown">0</span>)
+      <div class="right">
+        <a class="github" href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">&nbsp;</a>
+      </div>
+    </div>
+
+
+<div class="group">
+  <a href="/host/127.0.0.1:53553">127.0.0.1:53553</a>
+  <div>
+
+
+
+  </div>
+</div>
+
+
+  </body>
+</html>
+				`)))))
+		})
+	})
+
+	Context("and concourse has pipelines", func() {
+		BeforeEach(func() {
+			mocks := []MockRoute{
+				{"GET", "/api/v1/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
+			}
+			setupMultiple(mocks)
+		})
+
+		It("returns a page with status etc", func() {
+			Ω(mockRecorder.Code).Should(Equal(200))
+			Ω(stripHostPort(stripDate(stringMinifier(mockRecorder.Body.String())))).Should(Equal(stripHostPort(stripDate(stringMinifier(`
+<!DOCTYPE html>
+<html>
+  <head rel="v2">
+    <title>Concourse Summary</title>
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <script>window.refresh_interval =  0 </script>
+    <script src="/favico-0.3.10.min.js"></script>
+    <script src="/refresh.js"></script>
+  </head>
+  <body>
+    <div class="time">
+      2017-09-13 09:38:03 &#43;0100 (<span id="countdown">0</span>)
+      <div class="right">
+        <a class="github" href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">&nbsp;</a>
+      </div>
+    </div>
+
+
+<div class="group">
+  <a href="/host/127.0.0.1:53555">127.0.0.1:53555</a>
+  <div>
+
+
+  <a href="http://127.0.0.1:53555/test1.url" target="_blank" class="outer">
+  <div class="status">
+    <div class="paused_job" style="width: 0%;"></div>
+    <div class="aborted" style="width: 16%;"></div>
+    <div class="errored" style="width: 16%;"></div>
+    <div class="failed" style="width: 16%;"></div>
+    <div class="succeeded" style="width: 16%;"></div>
+  </div>
+
+
+  <div class="inner">
+    <span class="test1"><span>test1</span></span>
+    <span class=""><span></span></span>
+  </div>
+  </a>
+
+
+  </div>
+</div>
+
+
+  </body>
 </html>`)))))
 		})
 	})
