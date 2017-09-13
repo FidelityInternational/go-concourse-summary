@@ -38,11 +38,12 @@ func filterData(data []Data, pipelines []Pipeline) []Data {
 				continue
 			}
 			if len(pipeline.Groups) == 0 || pipeline.Groups == nil {
-				if datum.Group == "" {
-					filteredData = append(filteredData, datum)
-				}
+				filteredData = append(filteredData, datum)
 			} else {
 				for _, group := range pipeline.Groups {
+					if group == "all" && datum.Group == "" {
+						filteredData = append(filteredData, datum)
+					}
 					if group == datum.Group {
 						filteredData = append(filteredData, datum)
 					}
