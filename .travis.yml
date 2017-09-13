@@ -10,7 +10,7 @@ before_install:
   - go get github.com/onsi/ginkgo/ginkgo
 
 script:
-  - ginkgo -r -cover
+  - ginkgo -r -race -covermode=atomic -coverprofile=coverage.txt
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
