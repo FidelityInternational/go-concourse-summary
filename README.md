@@ -1,8 +1,10 @@
 # go-concourse-summary
 
-This project is heavily influenced by [concourse-summary](https://github.com/dgodd/concourse-summary). As `concourse-summary` (in its current state its actually a clone with replacement backend) it intends to show a quick overview of all of your [concourse](https://concourse.ci) pipelines in groups in a single summary page.
+This is a port of [concourse-summary](https://github.com/dgodd/concourse-summary) to Golang. The aim is for all features of `concourse-summary` to be covered in this port. In its current state all features should have been migrated with the exception of the ability to collapse/ expand groups.
 
-`concourse-summary` is a brilliant app and provided exactly what you would expect from a summary view of concourse, unfortunately as it is written in [crystal](https://crystal-lang.org) which is still an alpha language we had many issues of compatability when either `crystal` or `concourse-summary` were updated.
+The intention of `concourse-summary` is to show a quick overview of all of your [concourse](https://concourse.ci) pipelines and groups in a single summary page.
+
+It was intended that all configuration would be compatible between `go-concourse-summary` and `concourse-summary`. Unfortunately due to the object model differences on Golang marshaling it has been necessary to rework the format of `HOSTS` and `CS_GROUPS` as detailed below. It is a goal to provide a scripted way of migrating these variables.
 
 ### Usage
 
