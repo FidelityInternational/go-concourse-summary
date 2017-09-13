@@ -1,5 +1,9 @@
 # go-concourse-summary
 
+[![codecov.io](https://codecov.io/github/FidelityInternational/go-concourse-summary/coverage.svg?branch=master)](https://codecov.io/github/FidelityInternational/go-concourse-summary?branch=master)
+[![Go Report Card](https://goreportcard.com/badge/github.com/FidelityInternational/go-concourse-summary)](https://goreportcard.com/report/github.com/FidelityInternational/go-concourse-summary)
+[![Build Status](https://travis-ci.org/FidelityInternational/go-concourse-summary.svg?branch=master)](https://travis-ci.org/FidelityInternational/go-concourse-summary)
+
 This is a port of [concourse-summary](https://github.com/dgodd/concourse-summary) to Golang. The aim is for all features of `concourse-summary` to be covered in this port. In its current state all features should have been migrated with the exception of the ability to collapse/ expand groups.
 
 The intention of `concourse-summary` is to show a quick overview of all of your [concourse](https://concourse.ci) pipelines and groups in a single summary page.

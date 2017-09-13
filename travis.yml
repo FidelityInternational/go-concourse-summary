@@ -1,0 +1,16 @@
+---
+language: go
+
+go:
+  - 1.9
+
+go_import_path: github.com/FidelityInternational/go-concourse-summary
+
+before_install:
+  - go get github.com/onsi/ginkgo/ginkgo
+
+script:
+  - ginkgo -r -cover
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
