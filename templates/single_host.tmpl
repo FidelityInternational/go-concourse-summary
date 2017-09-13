@@ -1,0 +1,19 @@
+{{define "singleHost"}}
+{{range .Statuses}}
+  <a href="{{ .URL}}" target="_blank" class="outer{{if .Running}} running{{end}}">
+  <div class="status">
+    <div class="paused_job" style="width: {{ .Percent "paused_job"}}%;"></div>
+    <div class="aborted" style="width: {{ .Percent "aborted"}}%;"></div>
+    <div class="errored" style="width: {{ .Percent "errored"}}%;"></div>
+    <div class="failed" style="width: {{ .Percent "failed"}}%;"></div>
+    <div class="succeeded" style="width: {{ .Percent "succeeded"}}%;"></div>
+  </div>
+  {{if .Paused}}<div class="paused"></div>{{end}}
+  {{if .BrokenResource}}<div class="paused"></div>{{end}}
+  <div class="inner">
+    <span class="{{ .Pipeline}}"><span>{{ .Pipeline}}</span></span>
+    <span class="{{ .Group}}"><span>{{ .Group}}</span></span>
+  </div>
+  </a>
+{{end}}
+{{end}}

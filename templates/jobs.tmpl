@@ -1,0 +1,18 @@
+{{template "header"}}
+
+<div class="scalable">
+{{range .Jobs}}
+  <a href="https://{{ .Host}}{{ .URL}}/jobs/{{ .Name}}/builds/{{ .LatestBuildNum}}" target="_blank" class="outer{{if .Running}} running{{end}}">
+  <div class="status">
+    <div class="{{ .Status}}" style="width: 100%;"></div>
+  </div>
+  {{if .Paused}}<div class="paused"></div>{{end}}
+  <div class="inner">
+    <span><span>{{ .Pipeline}}</span></span>
+    <span><span>{{ .Name}}</span></span>
+    <span><span>({{ .StartTimeAgoDays}}d) {{ .RunTime}}</span></span>
+  </div>
+</a>
+{{end}}
+</div>
+{{template "footer"}}

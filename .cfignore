@@ -1,0 +1,5 @@
+*.coverprofile
+go-concourse-summary
+*_test.go
+manifest.yml
+scripts
