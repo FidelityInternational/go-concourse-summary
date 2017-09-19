@@ -1,9 +1,8 @@
 ---
-applications:
-- name: go-concourse-summary
-  memory: 20M
-  disk_quota: 50M
-  instances: 2
-  env:
-    GOVERSION: go1.9
-    GOPACKAGENAME: github.com/FidelityInternational/go-concourse-summary
+name: go-concourse-summary
+memory: 20M
+disk_quota: 50M
+instances: 2
+env:
+  GOVERSION: go1.9
+  GOPACKAGENAME: github.com/FidelityInternational/go-concourse-summary
