@@ -132,7 +132,7 @@ func createHTTPClient(config *Config) *http.Client {
 			MaxIdleConnsPerHost: 2,
 			TLSClientConfig:     &tls.Config{InsecureSkipVerify: config.SkipSSLValidation},
 		},
-		Timeout: time.Duration(5) * time.Second,
+		Timeout: time.Duration(30) * time.Second,
 	}
 
 	return client
