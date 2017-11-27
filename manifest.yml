@@ -1,6 +1,6 @@
 ---
 name: go-concourse-summary
-memory: 20M
+memory: 40M
 disk_quota: 50M
 instances: 2
 env:
