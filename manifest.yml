@@ -1,7 +1,7 @@
 ---
 name: go-concourse-summary
 memory: 40M
-disk_quota: 50M
+disk_quota: 70M
 instances: 2
 env:
   GOVERSION: go1.9
