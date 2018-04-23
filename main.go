@@ -21,7 +21,8 @@ func main() {
 	groupsJSON := os.Getenv("CS_GROUPS")
 	skipSSLValidationString := os.Getenv("SKIP_SSL_VALIDATION")
 	refreshIntervalString := os.Getenv("REFRESH_INTERVAL")
-	config, err := summary.SetupConfig(refreshIntervalString, groupsJSON, hostsJSON, skipSSLValidationString)
+	teamName := os.Getenv("TEAM")
+	config, err := summary.SetupConfig(refreshIntervalString, groupsJSON, hostsJSON, skipSSLValidationString, teamName)
 	if err != nil {
 		log.Fatal(err)
 	}

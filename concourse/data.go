@@ -62,7 +62,7 @@ func getData(host string, config *Config) ([]Data, error) {
 	if err != nil {
 		return []Data{}, err
 	}
-	team := client.Team("main")
+	team := client.Team(config.Team)
 	data := map[string]Data{}
 	for _, pipeline := range pipelines {
 		jobs, err := team.ListJobs(pipeline.Name)
