@@ -26,6 +26,7 @@ type Config struct {
 	SkipSSLValidation bool
 	Templates         *template.Template
 	Protocol          string
+	Team              string
 }
 
 // CSGroups is a collection of concourse summary groups
@@ -72,7 +73,7 @@ type singleHostStruct struct {
 }
 
 // SetupConfig sets up a config object for summary, adding default values where appropriate
-func SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString string) (*Config, error) {
+func SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString, teamName string) (*Config, error) {
 	var (
 		refreshIntervalInt int
 		err                error
@@ -122,12 +123,17 @@ func SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString
 		skipSSLValidation = true
 	}
 
+	if teamName == "" {
+		teamName = "main"
+	}
+
 	return &Config{
 		RefreshInterval:   refreshIntervalInt,
 		CSGroups:          groups,
 		Hosts:             hosts,
 		SkipSSLValidation: skipSSLValidation,
 		Protocol:          "https",
+		Team:              teamName,
 	}, nil
 }
 

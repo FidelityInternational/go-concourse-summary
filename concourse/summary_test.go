@@ -36,7 +36,7 @@ func stringMinifier(in string) (out string) {
 }
 
 func stripDate(in string) (out string) {
-	re := regexp.MustCompile(`\d{4}-\d{2}-\d{4}:\d{2}:\d{2}&#43;\d{4}`)
+	re := regexp.MustCompile(`\d{4}-\d{2}-\d{4}:\d{2}:\d{2}(&#43;|-)\d{4}`)
 	return re.ReplaceAllString(in, "yyyy-mm-ddhh:mm:ss&#43;zzzz")
 }
 
@@ -47,13 +47,13 @@ func stripHostPort(in string) (out string) {
 
 var _ = Describe("#SetupConfig", func() {
 	var (
-		config                                                          *summary.Config
-		err                                                             error
-		refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString string
+		config                                                                    *summary.Config
+		err                                                                       error
+		refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString, teamName string
 	)
 
 	JustBeforeEach(func() {
-		config, err = summary.SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString)
+		config, err = summary.SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString, teamName)
 	})
 
 	AfterEach(func() {
@@ -61,6 +61,7 @@ var _ = Describe("#SetupConfig", func() {
 		groupsJSON = ""
 		hostsJSON = ""
 		skipSSLValidationString = ""
+		teamName = ""
 	})
 
 	Context("when refreshInterval is blank", func() {
@@ -451,7 +452,7 @@ var _ = Describe("#HostSummary", func() {
 	Context("when concourse returns invalid json", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[}", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[}", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -465,7 +466,7 @@ var _ = Describe("#HostSummary", func() {
 	Context("when concourse has no pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[]", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[]", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -506,8 +507,8 @@ var _ = Describe("#HostSummary", func() {
 	Context("and concourse has pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", pipelinesPayload, 200, "", nil},
-				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines/test1/jobs", jobsPayload, 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -603,7 +604,7 @@ var _ = Describe("#GroupSummary", func() {
 	Context("when concourse returns invalid json", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[}", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[}", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -617,7 +618,7 @@ var _ = Describe("#GroupSummary", func() {
 	Context("when concourse has no pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[]", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[]", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -663,8 +664,8 @@ var _ = Describe("#GroupSummary", func() {
 	Context("and concourse has pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", pipelinesPayload, 200, "", nil},
-				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines/test1/jobs", jobsPayload, 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})

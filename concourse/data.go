@@ -58,11 +58,11 @@ func getData(host string, config *Config) ([]Data, error) {
 	uri := fmt.Sprintf("%s://%s", config.Protocol, host)
 	httpClient := createHTTPClient(config)
 	client := concourse.NewClient(uri, httpClient, false)
-	pipelines, err := client.ListPipelines()
+	team := client.Team(config.Team)
+	pipelines, err := team.ListPipelines()
 	if err != nil {
 		return []Data{}, err
 	}
-	team := client.Team("main")
 	data := map[string]Data{}
 	for _, pipeline := range pipelines {
 		jobs, err := team.ListJobs(pipeline.Name)
