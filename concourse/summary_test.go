@@ -47,8 +47,8 @@ func stripHostPort(in string) (out string) {
 
 var _ = Describe("#SetupConfig", func() {
 	var (
-		config                                                          *summary.Config
-		err                                                             error
+		config                                                                    *summary.Config
+		err                                                                       error
 		refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString, teamName string
 	)
 
@@ -452,7 +452,7 @@ var _ = Describe("#HostSummary", func() {
 	Context("when concourse returns invalid json", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[}", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[}", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -466,7 +466,7 @@ var _ = Describe("#HostSummary", func() {
 	Context("when concourse has no pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[]", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[]", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -507,8 +507,8 @@ var _ = Describe("#HostSummary", func() {
 	Context("and concourse has pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", pipelinesPayload, 200, "", nil},
-				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines/test1/jobs", jobsPayload, 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -604,7 +604,7 @@ var _ = Describe("#GroupSummary", func() {
 	Context("when concourse returns invalid json", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[}", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[}", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -618,7 +618,7 @@ var _ = Describe("#GroupSummary", func() {
 	Context("when concourse has no pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", "[]", 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", "[]", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -664,8 +664,8 @@ var _ = Describe("#GroupSummary", func() {
 	Context("and concourse has pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/pipelines", pipelinesPayload, 200, "", nil},
-				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/pipelines/test1/jobs", jobsPayload, 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
