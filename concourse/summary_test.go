@@ -36,7 +36,7 @@ func stringMinifier(in string) (out string) {
 }
 
 func stripDate(in string) (out string) {
-	re := regexp.MustCompile(`\d{4}-\d{2}-\d{4}:\d{2}:\d{2}&#43;\d{4}`)
+	re := regexp.MustCompile(`\d{4}-\d{2}-\d{4}:\d{2}:\d{2}(&#43;|-)\d{4}`)
 	return re.ReplaceAllString(in, "yyyy-mm-ddhh:mm:ss&#43;zzzz")
 }
 
@@ -49,11 +49,11 @@ var _ = Describe("#SetupConfig", func() {
 	var (
 		config                                                          *summary.Config
 		err                                                             error
-		refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString string
+		refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString, teamName string
 	)
 
 	JustBeforeEach(func() {
-		config, err = summary.SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString)
+		config, err = summary.SetupConfig(refreshInterval, groupsJSON, hostsJSON, skipSSLValidationString, teamName)
 	})
 
 	AfterEach(func() {
@@ -61,6 +61,7 @@ var _ = Describe("#SetupConfig", func() {
 		groupsJSON = ""
 		hostsJSON = ""
 		skipSSLValidationString = ""
+		teamName = ""
 	})
 
 	Context("when refreshInterval is blank", func() {
