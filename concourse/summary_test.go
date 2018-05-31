@@ -428,6 +428,7 @@ var _ = Describe("#HostSummary", func() {
 		config       = &summary.Config{
 			Templates: templates,
 			Protocol:  "http",
+			Team:      "main",
 		}
 	)
 
@@ -439,6 +440,7 @@ var _ = Describe("#HostSummary", func() {
 		config = &summary.Config{
 			Templates: templates,
 			Protocol:  "http",
+			Team:      "main",
 		}
 	})
 
@@ -452,7 +454,7 @@ var _ = Describe("#HostSummary", func() {
 	Context("when concourse returns invalid json", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/teams/pipelines", "[}", 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines", "[}", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -466,7 +468,7 @@ var _ = Describe("#HostSummary", func() {
 	Context("when concourse has no pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/teams/pipelines", "[]", 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines", "[]", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -507,8 +509,8 @@ var _ = Describe("#HostSummary", func() {
 	Context("and concourse has pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/teams/pipelines", pipelinesPayload, 200, "", nil},
-				{"GET", "/api/v1/teams/pipelines/test1/jobs", jobsPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -537,7 +539,7 @@ var _ = Describe("#HostSummary", func() {
 <div class="scalable">
 
 
-	<a href="http://127.0.0.1:49898/test1.url" target="_blank" class="outer">
+	<a href="http://127.0.0.1:49898/teams/main/pipelines/test1" target="_blank" class="outer">
 	<div class="status">
 		<div class="paused_job" style="width: 0%;"></div>
 		<div class="aborted" style="width: 16%;"></div>
@@ -569,6 +571,7 @@ var _ = Describe("#GroupSummary", func() {
 		config       = &summary.Config{
 			Templates: templates,
 			Protocol:  "http",
+			Team:      "main",
 		}
 	)
 
@@ -580,6 +583,7 @@ var _ = Describe("#GroupSummary", func() {
 		config = &summary.Config{
 			Templates: templates,
 			Protocol:  "http",
+			Team:      "main",
 		}
 	})
 
@@ -604,7 +608,7 @@ var _ = Describe("#GroupSummary", func() {
 	Context("when concourse returns invalid json", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/teams/pipelines", "[}", 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines", "[}", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -618,7 +622,7 @@ var _ = Describe("#GroupSummary", func() {
 	Context("when concourse has no pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/teams/pipelines", "[]", 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines", "[]", 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -664,8 +668,8 @@ var _ = Describe("#GroupSummary", func() {
 	Context("and concourse has pipelines", func() {
 		BeforeEach(func() {
 			mocks := []MockRoute{
-				{"GET", "/api/v1/teams/pipelines", pipelinesPayload, 200, "", nil},
-				{"GET", "/api/v1/teams/pipelines/test1/jobs", jobsPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines", pipelinesPayload, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines/test1/jobs", jobsPayload, 200, "", nil},
 			}
 			setupMultiple(mocks)
 		})
@@ -697,7 +701,7 @@ var _ = Describe("#GroupSummary", func() {
   <div>
 
 
-  <a href="http://127.0.0.1:53555/test1.url" target="_blank" class="outer">
+  <a href="http://127.0.0.1:53555/teams/main/pipelines/test1" target="_blank" class="outer">
   <div class="status">
     <div class="paused_job" style="width: 0%;"></div>
     <div class="aborted" style="width: 16%;"></div>
