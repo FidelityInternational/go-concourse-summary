@@ -715,4 +715,66 @@ var _ = Describe("#GroupSummary", func() {
 </html>`)))))
 		})
 	})
+
+	Context("and concourse has a pipeline with groups", func() {
+		BeforeEach(func() {
+			mocks := []MockRoute{
+				{"GET", "/api/v1/teams/main/pipelines", examplePipeline, 200, "", nil},
+				{"GET", "/api/v1/teams/main/pipelines/cf-example-pipeline/jobs", examplePipelineJobs, 200, "", nil},
+			}
+			setupMultiple(mocks)
+		})
+
+		It("returns a page with status etc", func() {
+			Ω(mockRecorder.Code).Should(Equal(200))
+			Ω(stripHostPort(stripDate(stringMinifier(mockRecorder.Body.String())))).Should(Equal(stripHostPort(stripDate(stringMinifier(`
+<!DOCTYPE html>
+<html>
+  <head rel="v2">
+    <title>Concourse Summary</title>
+    <link rel="icon" type="image/png" href="/favicon.png" sizes="32x32">
+    <link rel="stylesheet" type="text/css" href="/styles.css">
+    <script>window.refresh_interval =  0 </script>
+    <script src="/favico-0.3.10.min.js"></script>
+    <script src="/refresh.js"></script>
+  </head>
+  <body>
+    <div class="time">
+      2017-09-13 09:38:03 &#43;0100 (<span id="countdown">0</span>)
+      <div class="right">
+        <a class="github" href="https://github.com/FidelityInternational/go-concourse-summary" target="_blank">&nbsp;</a>
+      </div>
+    </div>
+
+
+<div class="group">
+  <a href="/host/127.0.0.1:53555">127.0.0.1:53555</a>
+  <div>
+
+
+  <a href="http://127.0.0.1:53555/teams/main/pipelines/cf-example-pipeline?groups=test-group" target="_blank" class="outer">
+  <div class="status">
+    <div class="paused_job" style="width: 0%;"></div>
+    <div class="aborted" style="width: 0%;"></div>
+    <div class="errored" style="width: 0%;"></div>
+    <div class="failed" style="width: 0%;"></div>
+    <div class="succeeded" style="width: 100%;"></div>
+  </div>
+
+
+  <div class="inner">
+    <span class="cf-example-pipeline"><span>cf-example-pipeline</span></span>
+    <span class="test-group"><span>test-group</span></span>
+  </div>
+  </a>
+
+
+  </div>
+</div>
+
+
+  </body>
+</html>`)))))
+		})
+	})
 })
