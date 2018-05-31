@@ -223,19 +223,24 @@ var _ = Describe("#SetupConfig", func() {
 	})
 })
 
+func buildConfig(templates *template.Template, team string, protocol string) *summary.Config {
+	config := summary.Config{
+		Templates: templates,
+		Team:      team,
+		Protocol:  protocol,
+	}
+	return &config
+}
+
 var _ = Describe("config#Index", func() {
 	var (
 		templates    = template.Must(template.ParseGlob("../templates/*"))
 		mockRecorder *httptest.ResponseRecorder
-		config       = &summary.Config{
-			Templates: templates,
-		}
+		config       = buildConfig(templates, "", "")
 	)
 
 	AfterEach(func() {
-		config = &summary.Config{
-			Templates: templates,
-		}
+		config = buildConfig(templates, "", "")
 	})
 
 	JustBeforeEach(func() {
@@ -425,11 +430,7 @@ var _ = Describe("#HostSummary", func() {
 	var (
 		templates    = template.Must(template.ParseGlob("../templates/*"))
 		mockRecorder *httptest.ResponseRecorder
-		config       = &summary.Config{
-			Templates: templates,
-			Protocol:  "http",
-			Team:      "main",
-		}
+		config       = buildConfig(templates, "main", "http")
 	)
 
 	AfterEach(func() {
@@ -437,11 +438,7 @@ var _ = Describe("#HostSummary", func() {
 			teardown()
 		}
 
-		config = &summary.Config{
-			Templates: templates,
-			Protocol:  "http",
-			Team:      "main",
-		}
+		config = buildConfig(templates, "main", "http")
 	})
 
 	JustBeforeEach(func() {
@@ -568,11 +565,7 @@ var _ = Describe("#GroupSummary", func() {
 	var (
 		templates    = template.Must(template.ParseGlob("../templates/*"))
 		mockRecorder *httptest.ResponseRecorder
-		config       = &summary.Config{
-			Templates: templates,
-			Protocol:  "http",
-			Team:      "main",
-		}
+		config       = buildConfig(templates, "main", "http")
 	)
 
 	AfterEach(func() {
@@ -580,11 +573,7 @@ var _ = Describe("#GroupSummary", func() {
 			teardown()
 		}
 
-		config = &summary.Config{
-			Templates: templates,
-			Protocol:  "http",
-			Team:      "main",
-		}
+		config = buildConfig(templates, "main", "http")
 	})
 
 	JustBeforeEach(func() {
