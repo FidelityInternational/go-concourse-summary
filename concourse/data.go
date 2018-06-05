@@ -56,6 +56,7 @@ func filterData(data []Data, pipelines []Pipeline) []Data {
 
 func getData(host string, config *Config) ([]Data, error) {
 	uri := fmt.Sprintf("%s://%s", config.Protocol, host)
+	webURI := uri + "/teams/" + config.Team + "/pipelines/"
 	httpClient := createHTTPClient(config)
 	client := concourse.NewClient(uri, httpClient, false)
 	team := client.Team(config.Team)
@@ -83,9 +84,9 @@ func getData(host string, config *Config) ([]Data, error) {
 					datum.Group = group
 					datum.Paused = pipeline.Paused
 					if group == "" {
-						datum.URL = fmt.Sprintf("%s%s", uri, pipeline.URL)
+						datum.URL = fmt.Sprintf("%s%s", webURI, pipeline.Name)
 					} else {
-						datum.URL = fmt.Sprintf("%s%s?groups=%s", uri, pipeline.URL, group)
+						datum.URL = fmt.Sprintf("%s%s?groups=%s", webURI, pipeline.Name, group)
 					}
 				}
 				if !datum.Running {
