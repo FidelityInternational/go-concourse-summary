@@ -752,7 +752,7 @@ var _ = Describe("#GroupSummary", func() {
   <div>
 
 
-  <a href="http://127.0.0.1:53555/teams/main/pipelines/cf-example-pipeline?groups=test-group" target="_blank" class="outer">
+  <a href="http://127.0.0.1:53555/teams/main/pipelines/cf-example-pipeline?group=test-group" target="_blank" class="outer">
   <div class="status">
     <div class="paused_job" style="width: 0%;"></div>
     <div class="aborted" style="width: 0%;"></div>
