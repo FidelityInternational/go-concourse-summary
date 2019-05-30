@@ -86,7 +86,7 @@ func getData(host string, config *Config) ([]Data, error) {
 					if group == "" {
 						datum.URL = fmt.Sprintf("%s%s", webURI, pipeline.Name)
 					} else {
-						datum.URL = fmt.Sprintf("%s%s?groups=%s", webURI, pipeline.Name, group)
+						datum.URL = fmt.Sprintf("%s%s?group=%s", webURI, pipeline.Name, group)
 					}
 				}
 				if !datum.Running {
