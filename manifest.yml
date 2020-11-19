@@ -1,6 +1,6 @@
 ---
 applications:
-  name: go-concourse-summary
+- name: go-concourse-summary
   memory: 40M
   disk_quota: 70M
   instances: 2
